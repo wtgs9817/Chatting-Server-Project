@@ -9,4 +9,10 @@ test02 브랜치 - 동기 저장 방식
 (목적: main 브랜치(비동기 저장)와 성능 비교)
 
 <br /> <br />
+
+test03 브랜치 - 단일 채팅 서버 
+(목적: main 브랜치(다중 서버)와 test03(단일 서버)의 성능 비교)
+
+<br /> <br />
+
 <img width="10908" height="8404" alt="image" src="https://github.com/user-attachments/assets/06665e14-3ca2-4ac5-9de7-2f0302103a7f" />
