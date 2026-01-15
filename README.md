@@ -1,18 +1,7 @@
-# Chatting-Server-Project
+## 성능 검증용 테스트 프로젝트
 
-<br />
-test01 브랜치 - Redis Stream 제외
-(목적: 다중 서버 환경에서 Redis Stream 없이 메시지 전달 실패 확인용, main 브랜치와 비교)
+test03 브랜치 - 단일 채팅 서버 (목적: 다수의 사용자가 이용할 때 다중 서버 환경의 확장성 증명)
 
-<br /><br />
-test02 브랜치 - 동기 저장 방식
-(목적: main 브랜치(비동기 저장)와 성능 비교)
+<br /> 
+<img width="1451" height="928" alt="test03-아키텍처" src="https://github.com/user-attachments/assets/a742f953-9293-448e-a0ed-dc8e10900dd8" />
 
-<br /> <br />
-
-test03 브랜치 - 단일 채팅 서버 
-(목적: main 브랜치(다중 서버)와 test03(단일 서버)의 성능 비교)
-
-<br /> <br />
-
-<img width="10908" height="8404" alt="image" src="https://github.com/user-attachments/assets/06665e14-3ca2-4ac5-9de7-2f0302103a7f" />
