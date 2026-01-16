@@ -5,17 +5,17 @@
 
 <br />
 
-**test01 브랜치** - Redis(Pub/Sub) 제외
+**test-project01 브랜치** - Redis(Pub/Sub) 제외
 (목적: 다중 서버 환경에서 서버 간 메시지 전달 실패 확인(Redis Pub/Sub 도입 이유 증명)
 
 <br />
 
-**test02 브랜치** - 동기 저장 방식
+**test-project02 브랜치** - 동기 저장 방식
 (목적: 비동기 배치 저장 대비 DB I/O 부하 비교)
 
 <br /> 
 
-**test03 브랜치** - 단일 채팅 서버 
+**test-project03 브랜치** - 단일 채팅 서버 
 (목적: 다수의 사용자가 이용할 때 다중 서버 환경의 확장성 증명)
 
 <br /> <br />
