@@ -2,6 +2,7 @@ package com.example.Chatting_Server_Project.redis;
 
 import com.example.Chatting_Server_Project.DTO.JoinDTO;
 import com.example.Chatting_Server_Project.DTO.MessageDTO;
+import com.example.Chatting_Server_Project.traffic_test.MessageMetrics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,6 +17,7 @@ public class RedisPublisher {
     클라이언트로부터 받은 메시지를 Redis 채널에 발행
     클라이언트 -> Controller -> RedisPublisher -> Redis -> 모든 서버
     */
+    private final MessageMetrics messageMetrics;
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper mapper = new ObjectMapper();
@@ -34,7 +36,7 @@ public class RedisPublisher {
             //System.out.println("메시지: " + json);
 
             redisTemplate.convertAndSend("chat:messages", message);
-
+            messageMetrics.publishedMessage();
 
         }
         catch (Exception e) {
@@ -51,6 +53,7 @@ public class RedisPublisher {
             //String json = mapper.writeValueAsString(joinDTO);
             //redisTemplate.convertAndSend("room-info", joinDTO);
             redisTemplate.convertAndSend("room:info", joinDTO);
+
             log.info("=== Redis 전송 완료 ===");
         }
         catch(Exception e) {
