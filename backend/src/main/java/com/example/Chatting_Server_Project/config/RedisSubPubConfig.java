@@ -71,4 +71,18 @@ public class RedisSubPubConfig {
         return template;
     }
 
+    @Bean
+    public RedisTemplate<String, Long> testRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Long> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new JacksonJsonRedisSerializer<>(Long.class));
+
+        return template;
+    }
+
+
+
+
 }

@@ -2,6 +2,7 @@ package com.example.Chatting_Server_Project.redis;
 
 import com.example.Chatting_Server_Project.DTO.JoinDTO;
 import com.example.Chatting_Server_Project.DTO.MessageDTO;
+import com.example.Chatting_Server_Project.traffic_test.MessageMetrics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,6 +21,7 @@ public class RedisPublisher {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper mapper = new ObjectMapper();
     //Java에서 JSON 데이터 구조를 처리하는 데 가장 널리 사용되는 Jackson 라이브러리의 핵심 클래스
+    private final MessageMetrics messageMetrics;
 
     public void publish(String roomId, MessageDTO message) {
         //writeValueAsString --> 직렬화 메소드
@@ -34,6 +36,7 @@ public class RedisPublisher {
             //System.out.println("메시지: " + json);
 
             redisTemplate.convertAndSend("chat:messages", message);
+            messageMetrics.publishedMessage();
 
 
         }

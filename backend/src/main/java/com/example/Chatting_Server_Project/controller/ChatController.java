@@ -7,6 +7,7 @@ import com.example.Chatting_Server_Project.redis.RedisPublisher;
 import com.example.Chatting_Server_Project.service.MessageService;
 import com.example.Chatting_Server_Project.service.ParticipantService;
 import com.example.Chatting_Server_Project.service.RoomService;
+import com.example.Chatting_Server_Project.traffic_test.MessageMetrics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,15 +30,12 @@ public class ChatController {
     private final ParticipantService participantService;
     private final RedisPublisher redisPublisher;
 
+    private final MessageMetrics messageMetrics;
+
 
 
     @MessageMapping("/chat.join")
     public void joinRoom(RequestDTO requestDTO, SimpMessageHeaderAccessor accessor) {
-        log.info("=== {} 에서 처리 ===", serverId);
-        System.out.println("뭐노 이기야");
-        System.out.println("ㄴㄴㄴ" + serverId);
-
-
 
         String sessionId = accessor.getSessionId();
         String roomId = roomService.findRoom().getRoomId();
@@ -64,6 +62,7 @@ public class ChatController {
         log.info("=== {} 에서 메시지 처리 ===", serverId);
         log.info("내용: {}", messageDTO.getContent());
 
+        messageMetrics.receivedMessage();
         messageService.addMessage(roomId, messageDTO);
         redisPublisher.publish(roomId, messageDTO);
     }

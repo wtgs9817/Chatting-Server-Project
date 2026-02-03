@@ -3,6 +3,7 @@ package com.example.Chatting_Server_Project.redis;
 import com.example.Chatting_Server_Project.DTO.JoinDTO;
 import com.example.Chatting_Server_Project.DTO.MessageDTO;
 import com.example.Chatting_Server_Project.DTO.ResponseUserDTO;
+import com.example.Chatting_Server_Project.traffic_test.MessageMetrics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,13 +23,14 @@ public class RedisSubscriber {
     */
     private final SimpMessagingTemplate messagingTemplate;
     private final ObjectMapper objectMapper;
+    private final MessageMetrics messageMetrics;
 
 
     public void handleMessages(MessageDTO messageDTO) {
         log.info("=== m2 시작 ===");
 
         messagingTemplate.convertAndSend("/topic/chatroom/" + messageDTO.getRoomId(), messageDTO);
-
+        messageMetrics.bufferedMessage();
         log.info("=== m2 끝 ===");
     }
 
@@ -56,7 +58,8 @@ public class RedisSubscriber {
         log.info("목적지: /topic/chatroom/{}", responseUserDTO.getRoomId());
 
         messagingTemplate.convertAndSend("/topic/chatroom/" + responseUserDTO.getRoomId(), responseUserDTO);
-
+        messageMetrics.bufferedMessage();
+        messageMetrics.tpsCount();
         log.info("=== handleRoomInfo 끝 ===");
     }
 }
