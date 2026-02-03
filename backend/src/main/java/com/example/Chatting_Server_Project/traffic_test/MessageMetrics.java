@@ -40,6 +40,7 @@ public class MessageMetrics {
     private final AtomicLong totalPublished = new AtomicLong();
     private final AtomicLong totalBuffered = new AtomicLong();
     private final AtomicLong totalSaved = new AtomicLong();
+    private final AtomicLong totalTps = new AtomicLong();
 
 
     public void receivedMessage() {
@@ -59,6 +60,10 @@ public class MessageMetrics {
         totalSaved.addAndGet(count); // 누적분 추가
     }
 
+    public void tpsCount() {
+        totalTps.incrementAndGet();
+    }
+
     // 30초마다 Redis에 한 번만 flush
     @Scheduled(fixedRate = 30000)
     public void flushToRedis() {
@@ -74,6 +79,9 @@ public class MessageMetrics {
             testRedisTemplate.opsForValue().increment("metric:saved", s);
         }
     }
+
+
+
 
     /**
      * [단 1회 실행] 앱 시작 1분(60초) 후, 전체 누적치를 파일로 저장합니다.
@@ -99,15 +107,16 @@ public class MessageMetrics {
         long p = totalPublished.get();
         long b = totalBuffered.get();
         long s = totalSaved.get();
+        double tps = totalTps.get()/ 180.0;
 
-        String logLine = String.format("%s,%d,%d,%d,%d\n", time, r, p, b, s);
+        String logLine = String.format("%s,%d,%d,%d,%d,%.2f\n", time, r, p, b, s, tps);
 
         try {
             // 2. 폴더가 없으면 자동 생성하는 로직 추가
             Files.createDirectories(Paths.get(directoryPath));
 
             if (!Files.exists(Paths.get(fileName))) {
-                String header = "Timestamp,Total_Received,Total_Published,Total_Buffered,Total_Saved\n";
+                String header = "Timestamp,Total_Received,Total_Published,Total_Buffered,Total_Saved,TPS\n";
                 Files.write(Paths.get(fileName), header.getBytes());
             }
 

@@ -31,6 +31,7 @@ public class RedisSubscriber {
 
         messagingTemplate.convertAndSend("/topic/chatroom/" + messageDTO.getRoomId(), messageDTO);
         messageMetrics.bufferedMessage();
+        messageMetrics.tpsCount();
         log.info("=== m2 끝 ===");
     }
 

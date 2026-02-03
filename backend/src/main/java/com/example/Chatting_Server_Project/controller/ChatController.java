@@ -59,10 +59,10 @@ public class ChatController {
     public void sendMessage(@DestinationVariable String roomId, MessageDTO messageDTO) {
         log.info("=== {} 에서 메시지 처리 ===", serverId);
         log.info("내용: {}", messageDTO.getContent());
-
+        messageMetrics.receivedMessage();
         messageService.addMessage(roomId, messageDTO);
         redisPublisher.publish(roomId, messageDTO);
-        messageMetrics.receivedMessage();
+
     }
 
 
