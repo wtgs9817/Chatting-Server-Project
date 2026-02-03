@@ -1,5 +1,5 @@
 services:
-  test-app1:
+  app1:
     build:
       context: ..
       dockerfile: docker/Dockerfile
@@ -10,9 +10,9 @@ services:
     environment:
       - SERVER_ID=app-1
       - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/chatting-server-test-db
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/chatting-server-test-db?rewriteBatchedStatements=true&useServerPrepStmts=false&allowMultiQueries=true&serverTimezone=Asia/Seoul
 
-  test-app2:
+  app2:
     build:
       context: ..
       dockerfile: docker/Dockerfile
@@ -23,9 +23,9 @@ services:
     environment:
       - SERVER_ID=app-2
       - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/chatting-server-test-db
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/chatting-server-test-db?rewriteBatchedStatements=true&useServerPrepStmts=false&allowMultiQueries=true&serverTimezone=Asia/Seoul
 
-  test-app3:
+  app3:
     build:
       context: ..
       dockerfile: docker/Dockerfile
@@ -36,7 +36,7 @@ services:
     environment:
       - SERVER_ID=app-3
       - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/chatting-server-test-db
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/chatting-server-test-db?rewriteBatchedStatements=true&useServerPrepStmts=false&allowMultiQueries=true&serverTimezone=Asia/Seoul
 
   nginx:
     image: nginx:latest
@@ -45,9 +45,9 @@ services:
     volumes:
       - ../nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
-      - test-app1
-      - test-app2
-      - test-app3
+      - app1
+      - app2
+      - app3
 
   redis:
     image: redis:latest

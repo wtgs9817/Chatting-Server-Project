@@ -27,12 +27,13 @@ public class RedisSubscriber {
     private final MessageMetrics messageMetrics;
 
     public void handleMessages(MessageDTO messageDTO) {
-        log.info("=== m2 시작 ===");
 
-        messagingTemplate.convertAndSend("/topic/chatroom/" + messageDTO.getRoomId(), messageDTO);
         messageMetrics.bufferedMessage();
         messageMetrics.tpsCount();
-        log.info("=== m2 끝 ===");
+
+        messagingTemplate.convertAndSend("/topic/chatroom/" + messageDTO.getRoomId(), messageDTO);
+
+
     }
 
     public void handleRoomInfo(JoinDTO joinDTO) {

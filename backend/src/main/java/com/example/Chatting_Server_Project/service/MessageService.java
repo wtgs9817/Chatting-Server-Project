@@ -6,13 +6,16 @@ import com.example.Chatting_Server_Project.entity.MessageEntity;
 import com.example.Chatting_Server_Project.repository.MessageBatchRepository;
 import com.example.Chatting_Server_Project.repository.MessageRepository;
 import com.example.Chatting_Server_Project.traffic_test.MessageMetrics;
-import lombok.Getter;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
 import org.springframework.web.servlet.HandlerMapping;
 
+import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -42,7 +45,7 @@ public class MessageService {
         messageBuffer.offer(messageEntity);
         int cnt = count.incrementAndGet();
 
-        if(cnt >= 200 && flushCheck.compareAndSet(false, true)) {
+        if(cnt >= 1000 && flushCheck.compareAndSet(false, true)) {
             flush();
         }
     }
@@ -55,13 +58,14 @@ public class MessageService {
         }
     }
 
+
     private void flush() {
         try {
             while (messageBuffer.peek() != null) {  // 버퍼 빌 때까지 반복
                 List<MessageEntity> list = new ArrayList<>();
                 MessageEntity entity;
 
-                while (list.size() < 200 && (entity = messageBuffer.poll()) != null) {
+                while (list.size() < 1000 && (entity = messageBuffer.poll()) != null) {
                     list.add(entity);
                 }
 
@@ -78,6 +82,8 @@ public class MessageService {
             flushCheck.set(false);
         }
     }
+
+
 
 
 }
