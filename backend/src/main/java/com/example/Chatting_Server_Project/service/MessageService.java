@@ -4,14 +4,16 @@ package com.example.Chatting_Server_Project.service;
 import com.example.Chatting_Server_Project.DTO.MessageDTO;
 import com.example.Chatting_Server_Project.entity.MessageEntity;
 import com.example.Chatting_Server_Project.repository.MessageBatchRepository;
-import com.example.Chatting_Server_Project.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.HandlerMapping;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,12 +21,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+
 public class MessageService {
 
+    //private final MessageRepository messageRepository;
     private final MessageBatchRepository messageBatchRepository;
     private final AtomicInteger count = new AtomicInteger(0);
     private final AtomicBoolean flushCheck = new AtomicBoolean(false);
     private final Queue<MessageEntity> messageBuffer = new ConcurrentLinkedQueue<>();
+
+    private final HandlerMapping stompWebSocketHandlerMapping;
 
     public void addMessage(String RoomId, MessageDTO messageDTO) {
         messageDTO.setRoomId(RoomId);
@@ -35,7 +41,7 @@ public class MessageService {
         messageBuffer.offer(messageEntity);
         int cnt = count.incrementAndGet();
 
-        if(cnt >= 200 && flushCheck.compareAndSet(false, true)) {
+        if(cnt >= 1000 && flushCheck.compareAndSet(false, true)) {
             flush();
         }
     }
@@ -48,13 +54,14 @@ public class MessageService {
         }
     }
 
+
     private void flush() {
         try {
             while (messageBuffer.peek() != null) {  // 버퍼 빌 때까지 반복
                 List<MessageEntity> list = new ArrayList<>();
                 MessageEntity entity;
 
-                while (list.size() < 200 && (entity = messageBuffer.poll()) != null) {
+                while (list.size() < 1000 && (entity = messageBuffer.poll()) != null) {
                     list.add(entity);
                 }
 
@@ -70,4 +77,8 @@ public class MessageService {
             flushCheck.set(false);
         }
     }
+
+
+
+
 }
