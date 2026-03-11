@@ -10,7 +10,7 @@ services:
     environment:
       - SERVER_ID=app-1
       - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/chatting-server-test-db
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/chatting-server-test-db?rewriteBatchedStatements=true&serverTimezone=Asia/Seoul
   main-app2:
     build:
       context: ..
@@ -20,7 +20,7 @@ services:
     environment:
       - SERVER_ID=app-2
       - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/chatting-server-test-db
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/chatting-server-test-db?rewriteBatchedStatements=true&serverTimezone=Asia/Seoul
   main-app3:
     build:
       context: ..
@@ -30,7 +30,7 @@ services:
     environment:
       - SERVER_ID=app-3
       - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/chatting-server-test-db
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/chatting-server-test-db?rewriteBatchedStatements=true&serverTimezone=Asia/Seoul
 
   nginx:
     image: nginx:latest
