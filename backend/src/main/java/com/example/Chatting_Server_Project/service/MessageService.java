@@ -50,7 +50,8 @@ public class MessageService {
         int cnt = count.incrementAndGet();
 
         if(cnt >= 1000 && flushCheck.compareAndSet(false, true)) {
-            flush();
+            //flush();
+            CompletableFuture.runAsync(this::flush, batchFlushExecutor);
         }
     }
 
