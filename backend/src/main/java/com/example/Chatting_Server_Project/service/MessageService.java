@@ -14,7 +14,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -29,10 +31,16 @@ public class MessageService {
     private final AtomicInteger count = new AtomicInteger(0);
     private final AtomicBoolean flushCheck = new AtomicBoolean(false);
     private final Queue<MessageEntity> messageBuffer = new ConcurrentLinkedQueue<>();
+    private final AtomicInteger addCount = new AtomicInteger(0);
+    private final Executor batchFlushExecutor;
 
-    private final HandlerMapping stompWebSocketHandlerMapping;
+    //private final HandlerMapping stompWebSocketHandlerMapping;
 
     public void addMessage(String RoomId, MessageDTO messageDTO) {
+        int total = addCount.incrementAndGet();
+
+
+
         messageDTO.setRoomId(RoomId);
         if (messageDTO.getCreatedAt() == null) {
             messageDTO.setCreatedAt(LocalDateTime.now());
@@ -49,27 +57,21 @@ public class MessageService {
     @Scheduled(fixedRate = 50000)
     public void scheduledFlush() {
         if(count.get() > 0 && flushCheck.compareAndSet(false, true)) {
-
-            flush();
+            CompletableFuture.runAsync(this::flush, batchFlushExecutor);
         }
     }
 
 
     private void flush() {
         try {
-            while (messageBuffer.peek() != null) {  // 버퍼 빌 때까지 반복
-                List<MessageEntity> list = new ArrayList<>();
-                MessageEntity entity;
-
-                while (list.size() < 1000 && (entity = messageBuffer.poll()) != null) {
-                    list.add(entity);
-                }
-
-                if (!list.isEmpty()) {
-                    messageBatchRepository.batchInsert(list);
-                    count.addAndGet(-list.size());
-                }
-
+            List<MessageEntity> list = new ArrayList<>();
+            MessageEntity entity;
+            while (list.size() < 1000 && (entity = messageBuffer.poll()) != null) {
+                list.add(entity);
+            }
+            if (!list.isEmpty()) {
+                messageBatchRepository.batchInsert(list);
+                count.addAndGet(-list.size());
             }
         } catch (Exception e) {
             log.error("에러 : ", e);
@@ -77,8 +79,4 @@ public class MessageService {
             flushCheck.set(false);
         }
     }
-
-
-
-
 }
