@@ -1,7 +1,7 @@
 # Chatting-Server-Project(학습용 개인 프로젝트)
 <br />
 
-### 포트폴리오 : https://www.notion.so/_v2-276093794d978067bc2dd93c79799a3f
+### 포트폴리오 : [https://www.notion.so/_v2-276093794d978067bc2dd93c79799a3f](https://www.notion.so/2fb093794d97807eb5f1d09ae09e5b1d)
 
 <br /> <br />
 
